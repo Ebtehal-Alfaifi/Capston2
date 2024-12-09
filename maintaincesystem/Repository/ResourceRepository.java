@@ -25,7 +25,7 @@ public interface ResourceRepository extends JpaRepository<Resource,Integer> {
 
 
     //end point ما ادري كم رقمها
-    @Query("SELECT r FROM Resource r WHERE r.vendor.id = ?1 AND r.stock <= ?2")
+    @Query("SELECT r FROM Resource r WHERE r.vendorId = ?1 AND r.stock <= ?2")
     List<Resource> findLowStockResourcesByVendorId(Integer vendorId, Integer stock);
 
 
