@@ -18,8 +18,8 @@ public class Vendor {
 
     @NotEmpty(message = " email can not be null")
     @Email(message = " you should enter valid email")
-    @Size(max = 10,message = " email length can not be more than 10")
-    @Column(columnDefinition = "varchar(10) not null unique")
+    @Size(max = 20,message = " email length can not be more than 10")
+    @Column(columnDefinition = "varchar(20) not null unique")
     private String email;
 
     @NotEmpty(message = "password can not be null")
@@ -50,11 +50,11 @@ public class Vendor {
         this.userName = userName;
     }
 
-    public @NotEmpty(message = " email can not be null") @Email(message = " you should enter valid email") @Size(max = 10, message = " email length can not be more than 10") String getEmail() {
+    public @NotEmpty(message = " email can not be null") @Email(message = " you should enter valid email") @Size(max = 20, message = " email length can not be more than 20") String getEmail() {
         return email;
     }
 
-    public void setEmail(@NotEmpty(message = " email can not be null") @Email(message = " you should enter valid email") @Size(max = 10, message = " email length can not be more than 10") String email) {
+    public void setEmail(@NotEmpty(message = " email can not be null") @Email(message = " you should enter valid email") @Size(max = 20, message = " email length can not be more than 20") String email) {
         this.email = email;
     }
 

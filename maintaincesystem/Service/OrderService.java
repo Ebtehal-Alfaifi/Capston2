@@ -18,13 +18,11 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final ResourceRepository resourceRepository;
-    private final TechnicianRepository technicianRepository;
 
-    public OrderService(OrderRepository orderRepository, ClientRepository clientRepository, ResourceRepository resourceRepository, TechnicianRepository technicianRepository) {
+    public OrderService(OrderRepository orderRepository, ClientRepository clientRepository, ResourceRepository resourceRepository) {
         this.orderRepository = orderRepository;
         this.clientRepository = clientRepository;
         this.resourceRepository = resourceRepository;
-        this.technicianRepository = technicianRepository;
     }
 
     //get order
@@ -131,52 +129,96 @@ public class OrderService {
 
 
     //10 of 15
-// عينتها ك قيمة ثابتة لتحسب سعر اي فني
-    private static final double HOURLY_RATE = 50.0;
 
-
-    public void assignTechnicianToOrder(Integer orderId, Integer technicianId, Integer hoursWorked) {
+    // يعني ان الفني يقوم ب اختيار الطلب الخاص بالمشكلة التي رفعها العميل
+    public void selectTechnicianForOrder(Integer orderId, Integer technicianId, Double proposedPrice) {
         Order order = orderRepository.findOrderByOrderId(orderId);
-        if (order==null) {
-           throw new ApiException ("Order not found with ID: " );
+        if (order == null) {
+            throw new ApiException("Order not found " );
         }
-
-        // اتحقق اذا الحالة احد اخذها او لا
-        if (order.getStatus().equals("Assigned")) {
+        if ("Assigned".equals(order.getStatus())) {
             throw new ApiException("Order is already assigned to a technician.");
         }
-
-
-        Client client = clientRepository.getClientbyId(order.getClientId());
-        if (client==null) {
-
-            throw new ApiException("Client not found with ID: " );
-        }
-        // حساب تكلفة الفني بناءً على الساعات
-        Double technicianFee = hoursWorked * HOURLY_RATE;
-
-        // التحقق من وجود رصيد كافٍ لدى العميل
-        if (client.getBalance() < technicianFee) {
-            throw new ApiException("Client does not have enough balance to pay for the technician.");
-        }
-
-        // خصم تكلفة الفني من رصيد العميل
-        client.setBalance(client.getBalance() - technicianFee);
-        clientRepository.save(client);
-
-        // تحديث الطلب لتعيين الفني
-        order.setOrderType("Tech");
         order.setTechnicianId(technicianId);
-        order.setStatus("Assigned");
-
-        Double updatedTotalPrice = order.getTotalPrice()+ technicianFee;
-        order.setTotalPrice(updatedTotalPrice);
-
+        order.setProposedPrice(proposedPrice);
+        order.setStatus("Pending");
         orderRepository.save(order);
     }
 
 
+
+
     //11 of 15
+
+    // هذي بنعرض لي جميع الفنيين الي قبلو حالتي ومن خلالها يستطيع العميل اختيار اي فني يفضله
+    public List<Order> getProposedTechniciansForOrder(Integer orderId) {
+        List<Order>orders=orderRepository.findAllByOrderIdAndStatus(orderId,"pendeing");
+        // طبعا ما بيظهرون الا اذا كانت حالة الطلب بيندينق
+        if (orders==null){
+            throw new ApiException("there is no technical founds");
+        }
+        return orders;
+    }
+
+ //12 of 15
+    // العميل يقبل الفني الذي يريده
+ public void acceptTechnicianForOrder(Integer orderId, Integer technicianId, Integer clientId) {
+     Order order = orderRepository.findOrderByOrderId(orderId);
+     if (order == null) {
+         throw new ApiException("Order not found");
+     }
+
+     if (!order.getClientId().equals(clientId)) {
+         throw new ApiException("Client ID mismatch");
+     }
+
+     if (!"Pending".equals(order.getStatus())) {
+         throw new ApiException("Order status must be 'Pending' to accept the technician.");
+     }
+
+     Client client = clientRepository.getClientbyId(clientId);
+     if (client == null) {
+         throw new ApiException("Client not found ");
+     }
+
+     Double proposedPrice = order.getProposedPrice();
+     if (client.getBalance() < proposedPrice) {
+         throw new ApiException("Insufficient balance");
+     }
+
+     client.setBalance(client.getBalance() - proposedPrice);
+     clientRepository.save(client);
+
+     order.setTechnicianId(technicianId);
+     order.setStatus("Assigned");
+     orderRepository.save(order);
+ }
+
+
+ //13 of 14
+    // العميل يرفض الفني
+ public void rejectTechnicianForOrder(Integer orderId, Integer clientId) {
+     Order order = orderRepository.findOrderByOrderId(orderId);
+     if (order == null) {
+         throw new ApiException("Order not found  ");
+     }
+
+     if (!order.getClientId().equals(clientId)) {
+         throw new ApiException("Client ID mismatch");
+     }
+
+     if (!"Pending".equals(order.getStatus())) {
+         throw new ApiException("Order status must be 'Pending' to reject the technician.");
+     }
+
+     order.setTechnicianId(null);
+     order.setProposedPrice(null);
+     order.setStatus("Pending");
+     orderRepository.save(order);
+ }
+
+
+    //14 of 15
 // change status of order to complete
 public void completeOrder(Integer orderId, Integer technicianId) {
     Order order = orderRepository.findOrderByOrderId(orderId);

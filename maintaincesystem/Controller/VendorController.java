@@ -20,8 +20,9 @@ public class VendorController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<Vendor>> getAll() {
-        return ResponseEntity.status(200).body(vendorService.getAll());
+    public ResponseEntity getAll() {
+        List<Vendor>vendors=vendorService.getAll();
+        return ResponseEntity.status(200).body(vendors);
     }
 
     @PostMapping("/add")

@@ -66,17 +66,49 @@ public class OrderController {
         return ResponseEntity.status(200).body(new Api("purchaseResource success"));
     }
 
-    // تعيين فني للمشكلة
-    @PostMapping("/orders/assign/{orderId}/{technicianId}/{hoursWorked}")
-    public ResponseEntity assignTechnicianToOrder( @PathVariable Integer orderId,
-                                                   @PathVariable Integer technicianId,
-                                                   @PathVariable Integer hoursWorked) {
-        orderService.assignTechnicianToOrder(orderId, technicianId, hoursWorked);
-        return ResponseEntity.status(200).body(new Api("Technician assigned successfully"));
+
+// احدد فني للمشكلة العميل
+     @PostMapping("/select-technician/{orderId}/{technicianId}/{proposedPrice}")
+     public ResponseEntity selectTechnicianForOrder( @PathVariable Integer orderId,
+                                                     @PathVariable Integer technicianId,
+                                                     @PathVariable Double proposedPrice) {
+        orderService.selectTechnicianForOrder(orderId, technicianId, proposedPrice);
+        return ResponseEntity.status(200).body(new Api("Technician selection success"));
     }
 
+
+    // اعرض جميع الفنيين الذين اختارو مشكلة العميل لكي يقوم العميل بعدها بب اختيار فني محدد
+   @GetMapping("/{orderId}/proposed-technicians")
+   public ResponseEntity getProposedTechniciansForOrder(@PathVariable Integer orderId) {
+        List<Order> proposedTechnicians = orderService.getProposedTechniciansForOrder(orderId);
+        return ResponseEntity.status(200).body(proposedTechnicians); }
+
+
+// العميل يقبل الفني
+    @PostMapping("/{orderId}/accept-technician/technical-id/{technicianId}/client-id/{clientId}")
+    public ResponseEntity acceptTechnicianForOrder( @PathVariable Integer orderId,
+                                                    @PathVariable Integer technicianId,
+                                                    @PathVariable Integer clientId) {
+        orderService.acceptTechnicianForOrder(orderId, technicianId, clientId);
+        return ResponseEntity.status(200).body(new Api("Technician accepted successfully"));
+    }
+
+
+    // العميل يرفض الفني
+
+    @PostMapping("/{orderId}/reject-technician")
+    public ResponseEntity rejectTechnicianForOrder( @PathVariable Integer orderId,
+                                                    @PathVariable Integer clientId) {
+        orderService.rejectTechnicianForOrder(orderId, clientId);
+        return ResponseEntity.status(200).body(new Api("Technician rejected successfully")); }
+
+
+
+
+
+
 // الفني بعد ان يكمل حل المشكلة يحولها الى مكتمل
-    @PostMapping("/orders/complete/{orderId}/{technicianId}")
+    @PutMapping("/orders/complete/{orderId}/{technicianId}")
     public ResponseEntity completeOrder( @PathVariable Integer orderId
             , @PathVariable Integer technicianId) {
         orderService.completeOrder(orderId, technicianId);

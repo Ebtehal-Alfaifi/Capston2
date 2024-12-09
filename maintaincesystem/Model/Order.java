@@ -63,9 +63,17 @@ public class Order {
     @Column(columnDefinition = "double not null default 0.0")
       private Double totalPrice = 0.0;
 
+
+    @Column(columnDefinition = "double")
+    private Double proposedPrice;  /// احسب فيها تكلفة الفني /
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Order(Double proposedPrice) {
+        this.proposedPrice = proposedPrice;
+    }
 
     public Order(Integer orderId, Integer clientId, Integer technicianId, Integer resourceId, String issueDescription, String orderType, String status, Integer quantity, Double totalPrice, LocalDateTime createdAt) {
         this.orderId = orderId;
@@ -82,6 +90,14 @@ public class Order {
 
     public Order() {
 
+    }
+
+    public Double getProposedPrice() {
+        return proposedPrice;
+    }
+
+    public void setProposedPrice(Double proposedPrice) {
+        this.proposedPrice = proposedPrice;
     }
 
     public Integer getOrderId() {
