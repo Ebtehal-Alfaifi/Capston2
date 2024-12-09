@@ -28,7 +28,7 @@ public class VendorController {
     public ResponseEntity addNew(@RequestBody @Valid Vendor vendor, Errors errors) {
         if (errors.hasErrors()) {
             String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(200);
+            return ResponseEntity.status(400).body(message);
         }
         vendorService.addNew(vendor);
         return ResponseEntity.status(200).body(new Api("add success"));
