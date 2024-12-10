@@ -26,21 +26,15 @@ public class TechnicianController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity addTechnician(@RequestBody @Valid Technician technician, Errors errors) {
-        if (errors.hasErrors()) {
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity addTechnician(@RequestBody @Valid Technician technician) {
+
         technicianService.addTechnician(technician);
         return ResponseEntity.status(200).body(new Api("Technician added successfully"));
     }
 
     @PutMapping("/update/{technicianId}")
-    public ResponseEntity updateTechnician(@PathVariable Integer technicianId, @RequestBody @Valid Technician technician, Errors errors) {
-        if (errors.hasErrors()) {
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity updateTechnician(@PathVariable Integer technicianId, @RequestBody @Valid Technician technician) {
+
         technicianService.updateTechnician(technicianId, technician);
         return ResponseEntity.status(200).body(new Api("Technician updated successfully"));
     }

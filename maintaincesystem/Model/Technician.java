@@ -30,6 +30,9 @@ public class Technician {
     @Column(columnDefinition = "varchar(20) not null unique")
     private String email;
 
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+            , message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")
+    @Size(min = 8,message = "password at least should has 8 character")
     @NotEmpty(message = "password can not be empty")
     private String password;
 

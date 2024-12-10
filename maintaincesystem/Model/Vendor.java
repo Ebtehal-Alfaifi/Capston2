@@ -3,6 +3,7 @@ package com.example.maintaincesystem.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -23,6 +24,7 @@ public class Vendor {
     private String email;
 
     @NotEmpty(message = "password can not be null")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")
     @Size(min = 8,max = 10,message = "password length should be between 8 and 10")
     @Column(columnDefinition = "varchar(10) not null")
     private  String password;

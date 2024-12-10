@@ -26,6 +26,8 @@ public class Client {
 
     @NotEmpty(message = "Password cannot be empty")
     @Column(columnDefinition = "varchar(100) not null")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")
     private String password;
 
 

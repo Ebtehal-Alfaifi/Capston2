@@ -30,22 +30,14 @@ public class ClientController {
 
 
     @PostMapping("/add")
-    public ResponseEntity addClient(@RequestBody @Valid Client client, Errors errors) {
-        if (errors.hasErrors()){
-            String message=errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity addClient(@RequestBody @Valid Client client) {
          clientService.addClint(client);
         return  ResponseEntity.status(200).body(new Api("add success"));
     }
 
 
     @PutMapping("/update/{clientId}")
-    public ResponseEntity updateClient(@PathVariable Integer clientId, @RequestBody @Valid Client client, Errors errors) {
-        if (errors.hasErrors()){
-            String message=errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity updateClient(@PathVariable Integer clientId, @RequestBody @Valid Client client) {
         clientService.updateClint(clientId, client);
         return ResponseEntity.status(200).body(new Api("update success"));
     }

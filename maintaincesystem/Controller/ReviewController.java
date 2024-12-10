@@ -30,11 +30,8 @@ public class ReviewController {
 
 //add rev
 @PostMapping("/add")
-public ResponseEntity addrev(@RequestBody @Valid Review review, Errors errors) {
-    if (errors.hasErrors()) {
-        String message = errors.getFieldError().getDefaultMessage();
-    return ResponseEntity.status(400).body(message);
-    }
+public ResponseEntity addrev(@RequestBody @Valid Review review) {
+
     reviewService.createReview(review);
     return ResponseEntity.status(200).body(new Api("Review submitted successfully"));
     }
@@ -59,7 +56,7 @@ public ResponseEntity addrev(@RequestBody @Valid Review review, Errors errors) {
     public ResponseEntity submitComment(@PathVariable Integer orderId,
                                         @PathVariable Integer clientId,
                                         @RequestParam String comment) {
-        Review review = reviewService.submitComment(orderId, clientId, comment);
+        reviewService.submitComment(orderId, clientId, comment);
         return ResponseEntity.status(200).body(new Api("Comment submitted successfully"));
     }
 

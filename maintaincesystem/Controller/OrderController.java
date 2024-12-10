@@ -28,21 +28,14 @@ public class OrderController {
 
     // إنشاء طلب جديد
     @PostMapping("/creat-order")
-    public ResponseEntity createOrder(@RequestBody @Valid Order order, Errors errors) {
-        if (errors.hasErrors()){
-            String message=errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity createOrder(@RequestBody @Valid Order order) {
         orderService.createOrder(order);
         return ResponseEntity.status(200).body(new Api("order add success"));
     }
 
     @PutMapping("/update/{orderId}")
-    public ResponseEntity updateOrder(@PathVariable Integer orderId,@RequestBody @Valid Order order,Errors errors){
-        if (errors.hasErrors()){
-            String message=errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity updateOrder(@PathVariable Integer orderId,@RequestBody @Valid Order order){
+
 
         orderService.updateOrder(orderId,order);
         return ResponseEntity.status(200).body(new Api("update success"));

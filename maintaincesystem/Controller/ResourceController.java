@@ -28,10 +28,6 @@ public class ResourceController {
     //4 of 15 end point
     @PostMapping("/add/{vendorId}")
     public ResponseEntity addNew(@PathVariable Integer vendorId,@RequestBody @Valid Resource resource, Errors errors){
-        if (errors.hasErrors()){
-            String message=errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
         resourceService.addNew(vendorId,resource);
         return ResponseEntity.status(200).body(new Api("add success"));
 
@@ -39,12 +35,8 @@ public class ResourceController {
 @PutMapping("/update/resource-id/{resourceId}/vendor-id/{vendorId}")
     public ResponseEntity update(@PathVariable Integer resourceId,
                                  @PathVariable Integer vendorId ,
-                                 @RequestBody @Valid Resource resource,Errors errors){
-if (errors.hasErrors()){
-    String message=errors.getFieldError().getDefaultMessage();
-    return ResponseEntity.status(400).body(message);
+                                 @RequestBody @Valid Resource resource){
 
-}
 resourceService.update(resourceId,vendorId,resource);
 return ResponseEntity.status(200).body(new Api("update success"));
     }
@@ -85,4 +77,5 @@ return ResponseEntity.status(200).body(new Api("update success"));
         List<Resource> lowStockResources = resourceService.getLowStockResourcesForVendor(vendorId);
         return ResponseEntity.status(200).body(lowStockResources);
     }
+
 }

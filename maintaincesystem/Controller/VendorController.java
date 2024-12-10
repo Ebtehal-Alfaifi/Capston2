@@ -26,21 +26,15 @@ public class VendorController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity addNew(@RequestBody @Valid Vendor vendor, Errors errors) {
-        if (errors.hasErrors()) {
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity addNew(@RequestBody @Valid Vendor vendor) {
+
         vendorService.addNew(vendor);
         return ResponseEntity.status(200).body(new Api("add success"));
     }
 
 @PutMapping("/update/{vendorId}")
-    public ResponseEntity update(@PathVariable Integer vendorId, @RequestBody @Valid Vendor vendor, Errors errors) {
-        if (errors.hasErrors()) {
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity update(@PathVariable Integer vendorId, @RequestBody @Valid Vendor vendor) {
+
 
         vendorService.update(vendorId, vendor);
         return ResponseEntity.status(200).body(new Api(" update success"));
